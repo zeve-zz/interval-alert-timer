@@ -1,0 +1,427 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		060779784E272BDF52C013A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 512EEE964BA40583388BDC7C /* Assets.xcassets */; };
+		11473F7EC0B81B369D2B2E3F /* IntervalAlertTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB3A756CEBEEB0F230C954C /* IntervalAlertTimerApp.swift */; };
+		26155C6F85B99326552BCFBA /* DurationPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0E8512A3C12ECC987C2047 /* DurationPicker.swift */; };
+		26A9ECBE95D35555BE847EED /* PresetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F67A1AE51831CE00D4B4AF /* PresetsView.swift */; };
+		2C2ABA20195274FBEC177885 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8285551F939047F13D769776 /* ContentView.swift */; };
+		312C3D59047164597BA1941C /* ProgressRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062B75B5469BD7094DA07760 /* ProgressRingView.swift */; };
+		363727D9AE6049857DC78114 /* GlowEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C946542EE430E87969F6C719 /* GlowEffectView.swift */; };
+		5A187F122C1A036723BF7475 /* TimerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D303C2C707691AD7F69587 /* TimerConfiguration.swift */; };
+		5E5F7D87A6F8B04D004C8930 /* TimerPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6E48ACB106A6D646970C7C /* TimerPreset.swift */; };
+		6D59AB4B6B19FC8DCE69D6AF /* TimerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0C9879DD01F1984F217E9 /* TimerEngine.swift */; };
+		7308D959B382B6E987E630E2 /* AlertLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F890517166AE67B6C63DC4F /* AlertLevel.swift */; };
+		773770FF48BD01D0B936CE4B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3EF2C3176C2DB42C839140 /* NotificationService.swift */; };
+		A3C30B1C9F8F63A1FACBE979 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADDCD5560E42A40A46EEBC8 /* SetupView.swift */; };
+		A8F624E507FEFADAB1C2D935 /* TimerRunningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B50D8FDBFA01F96E086E32 /* TimerRunningView.swift */; };
+		B18EF25A22B8DEDD6C3BE798 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F06AF59A44D949724EAAB9 /* AppDelegate.swift */; };
+		C07B8DD7834AA5CE53589D82 /* HapticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155ED31496ADF1288D30570 /* HapticService.swift */; };
+		E6E658599D7BE51ADC819DAB /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E6C4C5E83CC0B125D8B93B /* AudioService.swift */; };
+		FDE150F31B912FD620ADA44C /* IntervalModePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84686CFBC92820117E1F175 /* IntervalModePicker.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04D303C2C707691AD7F69587 /* TimerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerConfiguration.swift; sourceTree = "<group>"; };
+		062B75B5469BD7094DA07760 /* ProgressRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingView.swift; sourceTree = "<group>"; };
+		06F06AF59A44D949724EAAB9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0ADDCD5560E42A40A46EEBC8 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		19B50D8FDBFA01F96E086E32 /* TimerRunningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerRunningView.swift; sourceTree = "<group>"; };
+		1FB3A756CEBEEB0F230C954C /* IntervalAlertTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalAlertTimerApp.swift; sourceTree = "<group>"; };
+		3155ED31496ADF1288D30570 /* HapticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticService.swift; sourceTree = "<group>"; };
+		34542350E8BF0AB5476653C8 /* IntervalAlertTimer.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = IntervalAlertTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F890517166AE67B6C63DC4F /* AlertLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertLevel.swift; sourceTree = "<group>"; };
+		512EEE964BA40583388BDC7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5CF0C9879DD01F1984F217E9 /* TimerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerEngine.swift; sourceTree = "<group>"; };
+		5D0E8512A3C12ECC987C2047 /* DurationPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationPicker.swift; sourceTree = "<group>"; };
+		8285551F939047F13D769776 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8C3EF2C3176C2DB42C839140 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		8E6E48ACB106A6D646970C7C /* TimerPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerPreset.swift; sourceTree = "<group>"; };
+		C3F67A1AE51831CE00D4B4AF /* PresetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetsView.swift; sourceTree = "<group>"; };
+		C946542EE430E87969F6C719 /* GlowEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlowEffectView.swift; sourceTree = "<group>"; };
+		D3E6C4C5E83CC0B125D8B93B /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
+		F84686CFBC92820117E1F175 /* IntervalModePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalModePicker.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		02B08E46ACD8F4451F20474E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4F890517166AE67B6C63DC4F /* AlertLevel.swift */,
+				04D303C2C707691AD7F69587 /* TimerConfiguration.swift */,
+				8E6E48ACB106A6D646970C7C /* TimerPreset.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		0DD88BF020F6801FF09257DE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				5D0E8512A3C12ECC987C2047 /* DurationPicker.swift */,
+				C946542EE430E87969F6C719 /* GlowEffectView.swift */,
+				F84686CFBC92820117E1F175 /* IntervalModePicker.swift */,
+				062B75B5469BD7094DA07760 /* ProgressRingView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		5829FC477F15B86F372D8379 /* IntervalAlertTimer */ = {
+			isa = PBXGroup;
+			children = (
+				512EEE964BA40583388BDC7C /* Assets.xcassets */,
+				CE8CE417DD44CB528F598AD6 /* App */,
+				02B08E46ACD8F4451F20474E /* Models */,
+				F03079192A9D9EED70FF86CE /* Services */,
+				7EFBA636B39D2CD31ADCC642 /* Views */,
+			);
+			path = IntervalAlertTimer;
+			sourceTree = "<group>";
+		};
+		7EFBA636B39D2CD31ADCC642 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8285551F939047F13D769776 /* ContentView.swift */,
+				C3F67A1AE51831CE00D4B4AF /* PresetsView.swift */,
+				0ADDCD5560E42A40A46EEBC8 /* SetupView.swift */,
+				19B50D8FDBFA01F96E086E32 /* TimerRunningView.swift */,
+				0DD88BF020F6801FF09257DE /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C164202A6793C4E91A6031E4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				34542350E8BF0AB5476653C8 /* IntervalAlertTimer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CE8CE417DD44CB528F598AD6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				06F06AF59A44D949724EAAB9 /* AppDelegate.swift */,
+				1FB3A756CEBEEB0F230C954C /* IntervalAlertTimerApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E507CD5E0D278754C7338C7B = {
+			isa = PBXGroup;
+			children = (
+				5829FC477F15B86F372D8379 /* IntervalAlertTimer */,
+				C164202A6793C4E91A6031E4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F03079192A9D9EED70FF86CE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D3E6C4C5E83CC0B125D8B93B /* AudioService.swift */,
+				3155ED31496ADF1288D30570 /* HapticService.swift */,
+				8C3EF2C3176C2DB42C839140 /* NotificationService.swift */,
+				5CF0C9879DD01F1984F217E9 /* TimerEngine.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		75926A30B29CBBF632B1CE8F /* IntervalAlertTimer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 32EF395B50FAFE56D612B14C /* Build configuration list for PBXNativeTarget "IntervalAlertTimer" */;
+			buildPhases = (
+				B31BA63FBA18E5DBF373A3FD /* Sources */,
+				7ED466F88998F751CCFE6E7A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IntervalAlertTimer;
+			packageProductDependencies = (
+			);
+			productName = IntervalAlertTimer;
+			productReference = 34542350E8BF0AB5476653C8 /* IntervalAlertTimer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8D5D8011EFA45F12AF1EC3CF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					75926A30B29CBBF632B1CE8F = {
+						DevelopmentTeam = 7CKVAB283X;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CA439D2B0512B6790532B3CA /* Build configuration list for PBXProject "IntervalAlertTimer" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E507CD5E0D278754C7338C7B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				75926A30B29CBBF632B1CE8F /* IntervalAlertTimer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7ED466F88998F751CCFE6E7A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				060779784E272BDF52C013A2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B31BA63FBA18E5DBF373A3FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7308D959B382B6E987E630E2 /* AlertLevel.swift in Sources */,
+				B18EF25A22B8DEDD6C3BE798 /* AppDelegate.swift in Sources */,
+				E6E658599D7BE51ADC819DAB /* AudioService.swift in Sources */,
+				2C2ABA20195274FBEC177885 /* ContentView.swift in Sources */,
+				26155C6F85B99326552BCFBA /* DurationPicker.swift in Sources */,
+				363727D9AE6049857DC78114 /* GlowEffectView.swift in Sources */,
+				C07B8DD7834AA5CE53589D82 /* HapticService.swift in Sources */,
+				11473F7EC0B81B369D2B2E3F /* IntervalAlertTimerApp.swift in Sources */,
+				FDE150F31B912FD620ADA44C /* IntervalModePicker.swift in Sources */,
+				773770FF48BD01D0B936CE4B /* NotificationService.swift in Sources */,
+				26A9ECBE95D35555BE847EED /* PresetsView.swift in Sources */,
+				312C3D59047164597BA1941C /* ProgressRingView.swift in Sources */,
+				A3C30B1C9F8F63A1FACBE979 /* SetupView.swift in Sources */,
+				5A187F122C1A036723BF7475 /* TimerConfiguration.swift in Sources */,
+				6D59AB4B6B19FC8DCE69D6AF /* TimerEngine.swift in Sources */,
+				5E5F7D87A6F8B04D004C8930 /* TimerPreset.swift in Sources */,
+				A8F624E507FEFADAB1C2D935 /* TimerRunningView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3C39E94DC34E418D6A28EAE2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7CKVAB283X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zeve.IntervalAlertTimer;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		40A0D30D89A7CA6C58B5F9B8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		76B8BFC6F83E1AE9636136C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8B7EBD353E813F3F80256439 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7CKVAB283X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zeve.IntervalAlertTimer;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		32EF395B50FAFE56D612B14C /* Build configuration list for PBXNativeTarget "IntervalAlertTimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B7EBD353E813F3F80256439 /* Debug */,
+				3C39E94DC34E418D6A28EAE2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CA439D2B0512B6790532B3CA /* Build configuration list for PBXProject "IntervalAlertTimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40A0D30D89A7CA6C58B5F9B8 /* Debug */,
+				76B8BFC6F83E1AE9636136C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8D5D8011EFA45F12AF1EC3CF /* Project object */;
+}
