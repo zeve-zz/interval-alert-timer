@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, SF Pro, Helvetica Neue, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 60px 20px 40px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+
+  /* Ring container */
+  .ring-area {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 32px;
+  }
+
+  .ring-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* Pickers inside the ring */
+  .picker-inside {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .picker-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .picker-col .faded { color: #555; font-size: 20px; }
+  .picker-col .selected {
+    font-size: 36px;
+    font-weight: 300;
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 4px 16px;
+  }
+  .picker-col .label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .colon {
+    font-size: 36px;
+    font-weight: 200;
+    color: #666;
+    padding: 0 2px;
+    align-self: center;
+    margin-top: -20px;
+  }
+
+  /* Quick duration chips */
+  .quick-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #1c1c1e;
+    color: #8ac;
+    border: none;
+    cursor: pointer;
+  }
+  .chip.active {
+    background: rgba(60, 150, 255, 0.2);
+    color: #5bf;
+  }
+
+  /* Interval section */
+  .section-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #999;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pct-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .pct-chip {
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    background: #1c1c1e;
+    color: #aaa;
+    border: none;
+    cursor: pointer;
+  }
+  .pct-chip.active {
+    background: #3c96fe;
+    color: #fff;
+  }
+
+  /* Summary */
+  .summary {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  /* Start button */
+  .start-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #3c96fe;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Presets link */
+  .presets-link {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #3c96fe;
+  }
+
+  /* Annotation arrows */
+  .annotation {
+    position: absolute;
+    font-size: 11px;
+    color: #f80;
+    font-style: italic;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <h1>Interval Timer</h1>
+
+  <!-- Ring with pickers inside -->
+  <div class="ring-area">
+    <svg class="ring-svg" viewBox="0 0 280 280">
+      <!-- Track -->
+      <circle cx="140" cy="140" r="126" fill="none" stroke="#222" stroke-width="12"/>
+      <!-- Dots at 25% intervals (4 dots) -->
+      <!-- 25% = 90° from top -->
+      <circle cx="266" cy="140" r="5" fill="#555"/>
+      <!-- 50% = 180° from top -->
+      <circle cx="140" cy="266" r="5" fill="#555"/>
+      <!-- 75% = 270° from top -->
+      <circle cx="14" cy="140" r="5" fill="#555"/>
+      <!-- Start/0% marker at top -->
+    </svg>
+
+    <div class="picker-inside">
+      <div class="picker-col">
+        <span class="faded">4</span>
+        <span class="selected">5</span>
+        <span class="faded">6</span>
+        <span class="label">min</span>
+      </div>
+      <span class="colon">:</span>
+      <div class="picker-col">
+        <span class="faded">59</span>
+        <span class="selected">00</span>
+        <span class="faded">1</span>
+        <span class="label">sec</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick duration chips -->
+  <div class="quick-chips">
+    <button class="chip">1m</button>
+    <button class="chip">3m</button>
+    <button class="chip active">5m</button>
+    <button class="chip">10m</button>
+    <button class="chip">25m</button>
+  </div>
+
+  <!-- Interval picker -->
+  <div class="section-label">🔔 Alert Every</div>
+  <div class="pct-chips">
+    <button class="pct-chip">10%</button>
+    <button class="pct-chip">20%</button>
+    <button class="pct-chip active">25%</button>
+    <button class="pct-chip">33%</button>
+    <button class="pct-chip">50%</button>
+  </div>
+
+  <div class="summary">4 alerts over 5:00 · Every 25%</div>
+
+  <button class="start-btn">Start Timer</button>
+
+  <div class="presets-link">☆ Saved Presets</div>
+
+</body>
+</html>

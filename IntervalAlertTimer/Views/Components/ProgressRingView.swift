@@ -13,7 +13,7 @@ struct ProgressRingView: View {
 
             ZStack {
                 Circle()
-                    .stroke(Color(.systemGray5), lineWidth: lineWidth)
+                    .stroke(Theme.ringTrack, lineWidth: lineWidth)
 
                 Circle()
                     .trim(from: 0, to: min(progress, 1.0))

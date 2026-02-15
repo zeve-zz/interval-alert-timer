@@ -12,6 +12,7 @@ final class TimerEngine {
     var currentAlertLevel: AlertLevel = .gentle
     var firedAlertIndices: Set<Int> = []
     var latestFiredLevel: AlertLevel?
+    var isDismissing = false
 
     // MARK: - Configuration
     private(set) var configuration: TimerConfiguration?
@@ -68,6 +69,7 @@ final class TimerEngine {
     func cancel() {
         isRunning = false
         isPaused = false
+        isDismissing = false
         stopDisplayTimer()
         startDate = nil
         pauseDate = nil
@@ -77,6 +79,29 @@ final class TimerEngine {
         firedAlertIndices = []
         latestFiredLevel = nil
         currentAlertLevel = .gentle
+    }
+
+    func dismiss() {
+        guard !isDismissing else { return }
+        isDismissing = true
+        stopDisplayTimer()
+
+        let startProgress = progress
+        let dismissDuration: TimeInterval = 0.5
+        let dismissStart = Date()
+
+        displayTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [weak self] timer in
+            guard let self else { timer.invalidate(); return }
+            let elapsed = Date().timeIntervalSince(dismissStart)
+            let t = min(elapsed / dismissDuration, 1.0)
+            let eased = 1 - (1 - t) * (1 - t)
+            self.progress = startProgress * (1 - eased)
+
+            if t >= 1.0 {
+                timer.invalidate()
+                self.cancel()
+            }
+        }
     }
 
     func recalculateFromDate() {

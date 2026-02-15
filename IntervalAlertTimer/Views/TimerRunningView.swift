@@ -2,28 +2,57 @@ import SwiftUI
 
 struct TimerRunningView: View {
     @Environment(TimerEngine.self) private var engine
+    @State private var pauseGlow = false
+    var ringNamespace: Namespace.ID
+
+    var statusLabel: String {
+        if engine.isDismissing { return "" }
+        if engine.isComplete { return "COMPLETE" }
+        if engine.isPaused { return "PAUSED" }
+        return engine.currentAlertLevel.label.uppercased()
+    }
+
+    var statusColor: Color {
+        if engine.isComplete { return Color(hex: 0x8AABA0) }
+        if engine.isPaused { return Theme.textSecondary }
+        return engine.currentAlertLevel.glowColor
+    }
 
     var body: some View {
         ZStack {
             // Background
-            Color.black.ignoresSafeArea()
+            Theme.backgroundDeep.ignoresSafeArea()
 
             // Glow effect
             GlowEffectView(
                 progress: engine.progress,
                 alertLevel: engine.currentAlertLevel,
-                isActive: engine.isRunning && !engine.isPaused
+                isActive: engine.isRunning && !engine.isPaused && !engine.isDismissing
             )
 
             // Main content
             VStack(spacing: 30) {
                 Spacer()
 
-                // Alert level label
-                Text(engine.currentAlertLevel.label.uppercased())
+                // Status label (shows alert level, "Paused", or "Complete")
+                Text(statusLabel)
                     .font(.caption.weight(.bold))
                     .tracking(3)
-                    .foregroundStyle(engine.currentAlertLevel.glowColor)
+                    .foregroundStyle(statusColor)
+                    .opacity(engine.isDismissing ? 0 : (engine.isPaused ? (pauseGlow ? 1.0 : 0.3) : 1.0))
+                    .animation(.easeInOut(duration: 0.3), value: engine.isPaused)
+                    .onChange(of: engine.isPaused) { _, paused in
+                        if paused {
+                            pauseGlow = false
+                            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                                pauseGlow = true
+                            }
+                        } else {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                pauseGlow = false
+                            }
+                        }
+                    }
 
                 // Progress ring with time
                 ZStack {
@@ -43,25 +72,20 @@ struct TimerRunningView: View {
                     VStack(spacing: 4) {
                         Text(TimerEngine.formatTime(engine.remainingTime))
                             .font(.system(size: 56, weight: .thin, design: .rounded))
+                            .foregroundStyle(Theme.textPrimary)
                             .monospacedDigit()
                             .contentTransition(.numericText())
 
                         Text("\(Int(engine.progress * 100))%")
                             .font(.title3.weight(.medium))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.textSecondary)
                     }
+                    .opacity(engine.isDismissing ? 0 : 1)
                 }
+                .matchedGeometryEffect(id: "timerRing", in: ringNamespace)
 
-                // Status
-                if engine.isComplete {
-                    Text("Complete!")
-                        .font(.title2.weight(.semibold))
-                        .foregroundStyle(.green)
-                } else if engine.isPaused {
-                    Text("Paused")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                }
+                // Spacer instead of status text area — keeps layout stable
+                Spacer().frame(height: 30)
 
                 Spacer()
 
@@ -69,16 +93,16 @@ struct TimerRunningView: View {
                 HStack(spacing: 40) {
                     if engine.isComplete {
                         Button {
-                            engine.cancel()
+                            engine.dismiss()
                         } label: {
-                            ControlButton(icon: "checkmark", label: "Done", color: .green)
+                            ControlButton(icon: "checkmark", label: "Done", color: Theme.accent)
                         }
                     } else {
                         // Cancel
                         Button {
-                            engine.cancel()
+                            engine.dismiss()
                         } label: {
-                            ControlButton(icon: "xmark", label: "Cancel", color: .red)
+                            ControlButton(icon: "xmark", label: "Cancel", color: Theme.destructive)
                         }
 
                         // Pause/Resume
@@ -92,15 +116,17 @@ struct TimerRunningView: View {
                             ControlButton(
                                 icon: engine.isPaused ? "play.fill" : "pause.fill",
                                 label: engine.isPaused ? "Resume" : "Pause",
-                                color: .accentColor
+                                color: Theme.accent
                             )
                         }
                     }
                 }
+                .opacity(engine.isDismissing ? 0 : 1)
                 .padding(.bottom, 50)
             }
         }
         .navigationBarBackButtonHidden()
+        .animation(.easeInOut(duration: 0.4), value: engine.isDismissing)
     }
 
     @ViewBuilder
@@ -115,7 +141,7 @@ struct TimerRunningView: View {
 
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.textSecondary)
         }
     }
 }

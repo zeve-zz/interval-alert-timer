@@ -21,10 +21,10 @@ enum AlertLevel: Int, CaseIterable, Comparable {
 
     var glowColor: Color {
         switch self {
-        case .gentle: return .blue
-        case .moderate: return .yellow
-        case .urgent: return .orange
-        case .final_: return .red
+        case .gentle: return Color(hex: 0x8AABA0)    // Soft teal
+        case .moderate: return Color(hex: 0xC4A882)   // Warm sand
+        case .urgent: return Color(hex: 0xC48B6E)     // Terracotta
+        case .final_: return Color(hex: 0xB87272)     // Dusty rose
         }
     }
 
