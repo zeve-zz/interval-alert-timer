@@ -1,8 +1,9 @@
+import ActivityKit
 import Foundation
 import Observation
 import SwiftUI
 
-@Observable
+@MainActor @Observable
 final class TimerEngine {
     // MARK: - Published State
     var remainingTime: TimeInterval = 0
@@ -22,6 +23,11 @@ final class TimerEngine {
     private var pauseDate: Date?
     private var accumulatedPauseTime: TimeInterval = 0
     private var displayTimer: Timer?
+    private var lastLiveActivityUpdate: Date?
+
+    // MARK: - Live Activity
+    private var currentActivity: Activity<TimerActivityAttributes>?
+    private var lastReportedAlertLevel: AlertLevel?
 
     // MARK: - Services
     var onAlertFired: ((AlertLevel, Int) -> Void)?
@@ -35,6 +41,11 @@ final class TimerEngine {
 
     var isComplete: Bool { progress >= 1.0 }
 
+    /// The Date when the timer will reach zero, assuming it keeps running from now.
+    var endDate: Date {
+        Date().addingTimeInterval(remainingTime)
+    }
+
     // MARK: - Actions
 
     func start(with config: TimerConfiguration) {
@@ -44,10 +55,12 @@ final class TimerEngine {
         accumulatedPauseTime = 0
         firedAlertIndices = []
         latestFiredLevel = nil
+        lastReportedAlertLevel = nil
         isRunning = true
         isPaused = false
         tick()
         startDisplayTimer()
+        startLiveActivity()
     }
 
     func pause() {
@@ -55,6 +68,7 @@ final class TimerEngine {
         isPaused = true
         pauseDate = Date()
         stopDisplayTimer()
+        updateLiveActivity()
     }
 
     func resume() {
@@ -64,6 +78,7 @@ final class TimerEngine {
         isPaused = false
         tick()
         startDisplayTimer()
+        updateLiveActivity()
     }
 
     func cancel() {
@@ -78,13 +93,17 @@ final class TimerEngine {
         progress = 0
         firedAlertIndices = []
         latestFiredLevel = nil
+        lastReportedAlertLevel = nil
+        lastLiveActivityUpdate = nil
         currentAlertLevel = .gentle
+        endLiveActivity(showComplete: false)
     }
 
     func dismiss() {
         guard !isDismissing else { return }
         isDismissing = true
         stopDisplayTimer()
+        endLiveActivity(showComplete: false)
 
         let startProgress = progress
         let dismissDuration: TimeInterval = 0.5
@@ -99,7 +118,9 @@ final class TimerEngine {
 
             if t >= 1.0 {
                 timer.invalidate()
-                self.cancel()
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    self.cancel()
+                }
             }
         }
     }
@@ -122,6 +143,15 @@ final class TimerEngine {
         progress = min(el / total, 1.0)
         currentAlertLevel = AlertLevel.forProgress(progress)
 
+        // Update live activity when alert level changes or every 5s for the compact countdown
+        let now = Date()
+        let needsPeriodicUpdate = lastLiveActivityUpdate.map { now.timeIntervalSince($0) >= 5 } ?? true
+        if currentAlertLevel != lastReportedAlertLevel || needsPeriodicUpdate {
+            lastReportedAlertLevel = currentAlertLevel
+            lastLiveActivityUpdate = now
+            updateLiveActivity()
+        }
+
         let offsets = config.alertOffsets
         for (index, offset) in offsets.enumerated() {
             if el >= offset && !firedAlertIndices.contains(index) {
@@ -139,6 +169,7 @@ final class TimerEngine {
             stopDisplayTimer()
             progress = 1.0
             remainingTime = 0
+            endLiveActivity(showComplete: true)
         }
     }
 
@@ -154,6 +185,83 @@ final class TimerEngine {
     private func stopDisplayTimer() {
         displayTimer?.invalidate()
         displayTimer = nil
+    }
+
+    // MARK: - Live Activity
+
+    func startLiveActivity() {
+        guard let config = configuration else { return }
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+
+        let attributes = TimerActivityAttributes(
+            totalDuration: config.totalDuration,
+            intervalModeLabel: config.intervalMode.displayLabel
+        )
+
+        let state = TimerActivityAttributes.ContentState(
+            alertLevelRaw: currentAlertLevel.rawValue,
+            isPaused: isPaused,
+            isComplete: false,
+            endDate: endDate,
+            progress: progress,
+            remainingLabel: Self.formatTime(remainingTime)
+        )
+
+        do {
+            let activity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: state, staleDate: nil),
+                pushType: nil
+            )
+            currentActivity = activity
+            lastReportedAlertLevel = currentAlertLevel
+        } catch {
+            // Live Activity request failed — timer still works without it
+        }
+    }
+
+    func updateLiveActivity() {
+        guard let activity = currentActivity else { return }
+
+        let state = TimerActivityAttributes.ContentState(
+            alertLevelRaw: currentAlertLevel.rawValue,
+            isPaused: isPaused,
+            isComplete: false,
+            endDate: endDate,
+            progress: progress,
+            remainingLabel: Self.formatTime(remainingTime)
+        )
+
+        let content = ActivityContent(state: state, staleDate: nil)
+        Task { @MainActor in
+            await activity.update(content)
+        }
+    }
+
+
+    func endLiveActivity(showComplete: Bool) {
+        guard let activity = currentActivity else { return }
+        currentActivity = nil
+
+        let finalState = TimerActivityAttributes.ContentState(
+            alertLevelRaw: AlertLevel.final_.rawValue,
+            isPaused: false,
+            isComplete: showComplete,
+            endDate: Date(),
+            progress: 1.0,
+            remainingLabel: "0:00"
+        )
+
+        let content = ActivityContent(state: finalState, staleDate: nil)
+        let dismissDate = Date().addingTimeInterval(30)
+        Task { @MainActor in
+            if showComplete {
+                await activity.update(content)
+                await activity.end(content, dismissalPolicy: .after(dismissDate))
+            } else {
+                await activity.end(content, dismissalPolicy: .immediate)
+            }
+        }
     }
 
     // MARK: - Formatting

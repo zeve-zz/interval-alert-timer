@@ -12,6 +12,9 @@ targets:
     platform: iOS
     sources:
       - IntervalAlertTimer
+      - Shared
+    dependencies:
+      - target: TimerActivityWidgetExtension
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
@@ -20,6 +23,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_NSSupportsLiveActivities: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.zeve.IntervalAlertTimer
         SWIFT_EMIT_LOC_STRINGS: YES
         MARKETING_VERSION: "1.0"
@@ -28,4 +32,30 @@ targets:
         DEVELOPMENT_TEAM: U3MBVHK77C
         SWIFT_VERSION: "6.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  TimerActivityWidgetExtension:
+    type: app-extension
+    platform: iOS
+    product: TimerActivityWidgetExtension
+    sources:
+      - TimerActivityWidget
+      - Shared
+    info:
+      path: TimerActivityWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: TimerActivityWidget
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        PRODUCT_BUNDLE_IDENTIFIER: com.zeve.IntervalAlertTimer.TimerActivityWidget
+        SWIFT_EMIT_LOC_STRINGS: YES
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: U3MBVHK77C
+        SWIFT_VERSION: "6.0"
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor

@@ -36,11 +36,19 @@ struct IntervalAlertTimerApp: App {
                 notificationService.cancelAll()
                 engine.recalculateFromDate()
             }
+            // Immediately sync Live Activity with actual state
+            if engine.isRunning || engine.isComplete {
+                engine.updateLiveActivity()
+            }
         case .background:
             // Going to background — schedule notifications for remaining alerts
             if engine.isRunning, !engine.isPaused, let config = engine.configuration {
                 let el = engine.elapsed
                 notificationService.scheduleAlerts(for: config, startDate: Date(), elapsed: el)
+            }
+            // Refresh Live Activity so countdown stays accurate on lock screen
+            if engine.isRunning {
+                engine.updateLiveActivity()
             }
         default:
             break

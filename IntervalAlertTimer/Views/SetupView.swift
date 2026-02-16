@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SetupView: View {
     @Environment(TimerEngine.self) private var engine
@@ -11,6 +12,14 @@ struct SetupView: View {
     @AppStorage("lastPercentage") private var percentage = 25
 
     @AppStorage("notificationPermissionRequested") private var permissionRequested = false
+
+    @State private var customPresets: [TimerPreset] = []
+    @State private var hiddenBuiltInIDs: Set<UUID> = []
+    @State private var presetOrder: [UUID] = []
+    @State private var draggedPresetID: UUID?
+    @State private var swipedPresetID: UUID?
+    @State private var showSaveAlert = false
+    @State private var newPresetName = ""
 
     private let notificationService = NotificationService()
     private let percentageOptions = [10, 20, 25, 33, 50]
@@ -33,9 +42,19 @@ struct SetupView: View {
         return config.alertOffsets.map { $0 / config.totalDuration }
     }
 
-    private var allPresets: [TimerPreset] {
-        let custom = loadCustomPresets()
-        return TimerPreset.builtInPresets + custom
+    private var orderedPresets: [TimerPreset] {
+        let available = TimerPreset.builtInPresets.filter { !hiddenBuiltInIDs.contains($0.id) } + customPresets
+        guard !presetOrder.isEmpty else { return available }
+        var result: [TimerPreset] = []
+        for id in presetOrder {
+            if let p = available.first(where: { $0.id == id }) {
+                result.append(p)
+            }
+        }
+        for p in available where !presetOrder.contains(p.id) {
+            result.append(p)
+        }
+        return result
     }
 
     var body: some View {
@@ -121,12 +140,12 @@ struct SetupView: View {
                 .padding(.bottom, 12)
 
                 // Summary
-                if isValid {
-                    Text("\(config.alertCount) alerts over \(TimerEngine.formatTime(totalDuration)) · Every \(percentage)%")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textTertiary)
-                        .padding(.bottom, 32)
-                }
+                Text(isValid
+                     ? "\(config.alertCount) alerts over \(TimerEngine.formatTime(totalDuration)) · Every \(percentage)%"
+                     : "Set at least 5 seconds")
+                    .font(.caption)
+                    .foregroundStyle(isValid ? Theme.textTertiary : Theme.textSecondary)
+                    .padding(.bottom, 32)
 
                 // Start button
                 Button {
@@ -153,37 +172,123 @@ struct SetupView: View {
                         .padding(.bottom, 12)
 
                     VStack(spacing: 0) {
-                        let presets = allPresets
-                        ForEach(Array(presets.enumerated()), id: \.element.id) { index, preset in
-                            Button {
-                                applyPreset(preset)
-                                startTimer()
-                            } label: {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 3) {
-                                        Text(preset.name)
-                                            .font(.body.weight(.medium))
-                                            .foregroundStyle(Theme.textPrimary)
-                                        Text("\(TimerEngine.formatTime(preset.configuration.totalDuration)) · \(preset.configuration.intervalMode.displayLabel)")
-                                            .font(.caption)
-                                            .foregroundStyle(Theme.textSecondary)
+                        ForEach(orderedPresets) { preset in
+                            VStack(spacing: 0) {
+                                ZStack(alignment: .trailing) {
+                                    // Delete button (only when swiped)
+                                    if swipedPresetID == preset.id {
+                                        HStack {
+                                            Spacer()
+                                            Button {
+                                                withAnimation(.easeInOut(duration: 0.3)) {
+                                                    deletePreset(preset)
+                                                    swipedPresetID = nil
+                                                }
+                                            } label: {
+                                                Image(systemName: "trash")
+                                                    .font(.body.weight(.semibold))
+                                                    .foregroundStyle(.white)
+                                                    .frame(width: 80)
+                                                    .frame(maxHeight: .infinity)
+                                                    .background(Color.red)
+                                            }
+                                        }
                                     }
-                                    Spacer()
-                                    Image(systemName: "play.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(Theme.accent)
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 14)
-                            }
 
-                            if index < presets.count - 1 {
-                                Divider()
-                                    .overlay(Theme.backgroundDivider)
-                                    .padding(.leading)
+                                    // Row content
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 3) {
+                                            Text(preset.name)
+                                                .font(.body.weight(.medium))
+                                                .foregroundStyle(Theme.textPrimary)
+                                            Text("\(TimerEngine.formatTime(preset.configuration.totalDuration)) · \(preset.configuration.intervalMode.displayLabel)")
+                                                .font(.caption)
+                                                .foregroundStyle(Theme.textSecondary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "play.circle.fill")
+                                            .font(.title2)
+                                            .foregroundStyle(Theme.accent)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 16)
+                                    .background(Theme.backgroundSurface)
+                                    .offset(x: swipedPresetID == preset.id ? -80 : 0)
+                                    .onTapGesture {
+                                        if swipedPresetID != nil {
+                                            withAnimation(.easeOut(duration: 0.2)) {
+                                                swipedPresetID = nil
+                                            }
+                                        } else {
+                                            applyPreset(preset)
+                                            startTimer()
+                                        }
+                                    }
+                                    .gesture(
+                                        DragGesture(minimumDistance: 20)
+                                            .onEnded { value in
+                                                withAnimation(.easeOut(duration: 0.2)) {
+                                                    if value.translation.width < -30 {
+                                                        swipedPresetID = preset.id
+                                                    } else {
+                                                        swipedPresetID = nil
+                                                    }
+                                                }
+                                            }
+                                    )
+                                }
+                                .clipped()
+                                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 12))
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        withAnimation { deletePreset(preset) }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+
+                                if preset.id != orderedPresets.last?.id {
+                                    Divider()
+                                        .overlay(Theme.backgroundDivider)
+                                        .padding(.leading, 16)
+                                }
                             }
+                            .onDrag {
+                                draggedPresetID = preset.id
+                                return NSItemProvider(object: preset.id.uuidString as NSString)
+                            }
+                            .onDrop(of: [UTType.text], delegate: PresetDropDelegate(
+                                targetID: preset.id,
+                                draggedID: $draggedPresetID,
+                                presetOrder: $presetOrder,
+                                onReorder: savePresetOrder
+                            ))
+                        }
+
+                        if !orderedPresets.isEmpty {
+                            Divider()
+                                .overlay(Theme.backgroundDivider)
+                                .padding(.leading, 16)
+                        }
+
+                        // Save preset row (not draggable)
+                        Button {
+                            showSaveAlert = true
+                        } label: {
+                            HStack {
+                                Text("Save Current Settings")
+                                    .font(.body.weight(.medium))
+                                    .foregroundStyle(Theme.accent)
+                                Spacer()
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(Theme.accent)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 16)
                         }
                     }
+                    .animation(.easeInOut(duration: 0.3), value: orderedPresets.map(\.id))
                     .background(Theme.backgroundSurface)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding(.horizontal)
@@ -196,6 +301,13 @@ struct SetupView: View {
         .background(Theme.backgroundDeep)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            customPresets = loadCustomPresets()
+            hiddenBuiltInIDs = loadHiddenBuiltInIDs()
+            presetOrder = loadPresetOrder()
+            if presetOrder.isEmpty {
+                let available = TimerPreset.builtInPresets.filter { !hiddenBuiltInIDs.contains($0.id) } + customPresets
+                presetOrder = available.map { $0.id }
+            }
             showContent = false
             appearTime = Date()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
@@ -203,6 +315,13 @@ struct SetupView: View {
                     showContent = true
                 }
             }
+        }
+        .alert("Save Preset", isPresented: $showSaveAlert) {
+            TextField("Preset Name", text: $newPresetName)
+            Button("Save") { saveCurrentAsPreset() }
+            Button("Cancel", role: .cancel) { newPresetName = "" }
+        } message: {
+            Text("Enter a name for this preset")
         }
     }
 
@@ -235,7 +354,9 @@ struct SetupView: View {
             }
         }
 
-        engine.start(with: timerConfig)
+        withAnimation(.easeInOut(duration: 0.5)) {
+            engine.start(with: timerConfig)
+        }
     }
 
     private func applyPreset(_ preset: TimerPreset) {
@@ -252,5 +373,87 @@ struct SetupView: View {
               let decoded = try? JSONDecoder().decode([TimerPreset].self, from: data)
         else { return [] }
         return decoded
+    }
+
+    private func saveCustomPresets() {
+        guard let data = try? JSONEncoder().encode(customPresets) else { return }
+        UserDefaults.standard.set(data, forKey: "savedPresets")
+    }
+
+    private func deletePreset(_ preset: TimerPreset) {
+        presetOrder.removeAll { $0 == preset.id }
+        savePresetOrder()
+        if preset.isBuiltIn {
+            hiddenBuiltInIDs.insert(preset.id)
+            saveHiddenBuiltInIDs()
+        } else {
+            customPresets.removeAll { $0.id == preset.id }
+            saveCustomPresets()
+        }
+    }
+
+    private func loadHiddenBuiltInIDs() -> Set<UUID> {
+        guard let data = UserDefaults.standard.data(forKey: "hiddenBuiltInPresets"),
+              let decoded = try? JSONDecoder().decode(Set<UUID>.self, from: data)
+        else { return [] }
+        return decoded
+    }
+
+    private func saveHiddenBuiltInIDs() {
+        guard let data = try? JSONEncoder().encode(hiddenBuiltInIDs) else { return }
+        UserDefaults.standard.set(data, forKey: "hiddenBuiltInPresets")
+    }
+
+    private func loadPresetOrder() -> [UUID] {
+        guard let data = UserDefaults.standard.data(forKey: "presetOrder"),
+              let decoded = try? JSONDecoder().decode([UUID].self, from: data)
+        else { return [] }
+        return decoded
+    }
+
+    private func savePresetOrder() {
+        guard let data = try? JSONEncoder().encode(presetOrder) else { return }
+        UserDefaults.standard.set(data, forKey: "presetOrder")
+    }
+
+    private func saveCurrentAsPreset() {
+        let name = newPresetName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        let config = TimerConfiguration(totalDuration: totalDuration, intervalMode: .percentage(percentage))
+        let preset = TimerPreset(name: name, configuration: config)
+        withAnimation(.easeInOut(duration: 0.3)) {
+            customPresets.append(preset)
+            presetOrder.append(preset.id)
+        }
+        saveCustomPresets()
+        savePresetOrder()
+        newPresetName = ""
+    }
+}
+
+struct PresetDropDelegate: DropDelegate {
+    let targetID: UUID
+    @Binding var draggedID: UUID?
+    @Binding var presetOrder: [UUID]
+    let onReorder: () -> Void
+
+    func dropEntered(info: DropInfo) {
+        guard let dragged = draggedID, dragged != targetID else { return }
+        guard let fromIndex = presetOrder.firstIndex(of: dragged),
+              let toIndex = presetOrder.firstIndex(of: targetID) else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            presetOrder.move(fromOffsets: IndexSet(integer: fromIndex),
+                             toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+        }
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        draggedID = nil
+        onReorder()
+        return true
+    }
+
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        DropProposal(operation: .move)
     }
 }

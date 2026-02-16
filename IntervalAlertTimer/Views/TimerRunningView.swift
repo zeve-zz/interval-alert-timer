@@ -2,7 +2,8 @@ import SwiftUI
 
 struct TimerRunningView: View {
     @Environment(TimerEngine.self) private var engine
-    @State private var pauseGlow = false
+    @State private var flipAngle: Double = 0
+    @State private var displayedLabel: String = ""
     var ringNamespace: Namespace.ID
 
     var statusLabel: String {
@@ -29,29 +30,42 @@ struct TimerRunningView: View {
                 alertLevel: engine.currentAlertLevel,
                 isActive: engine.isRunning && !engine.isPaused && !engine.isDismissing
             )
+            .opacity(engine.isDismissing ? 0 : 1)
 
             // Main content
             VStack(spacing: 30) {
                 Spacer()
 
                 // Status label (shows alert level, "Paused", or "Complete")
-                Text(statusLabel)
+                Text(displayedLabel)
                     .font(.caption.weight(.bold))
                     .tracking(3)
                     .foregroundStyle(statusColor)
-                    .opacity(engine.isDismissing ? 0 : (engine.isPaused ? (pauseGlow ? 1.0 : 0.3) : 1.0))
-                    .animation(.easeInOut(duration: 0.3), value: engine.isPaused)
-                    .onChange(of: engine.isPaused) { _, paused in
-                        if paused {
-                            pauseGlow = false
-                            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                                pauseGlow = true
-                            }
-                        } else {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                pauseGlow = false
+                    .opacity(engine.isDismissing ? 0 : 1.0)
+                    .phaseAnimator(engine.isPaused ? [0.4, 1.0] : [1.0]) { content, phase in
+                        content.opacity(phase)
+                    } animation: { _ in
+                        .easeInOut(duration: 1.5)
+                    }
+                    .rotation3DEffect(.degrees(flipAngle), axis: (x: 1, y: 0, z: 0))
+                    .onChange(of: statusLabel) { oldVal, newVal in
+                        guard !newVal.isEmpty, oldVal != newVal else {
+                            displayedLabel = newVal
+                            return
+                        }
+                        withAnimation(.easeIn(duration: 0.15)) {
+                            flipAngle = 90
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                            displayedLabel = newVal
+                            flipAngle = -90
+                            withAnimation(.easeOut(duration: 0.15)) {
+                                flipAngle = 0
                             }
                         }
+                    }
+                    .onAppear {
+                        displayedLabel = statusLabel
                     }
 
                 // Progress ring with time
@@ -126,7 +140,7 @@ struct TimerRunningView: View {
             }
         }
         .navigationBarBackButtonHidden()
-        .animation(.easeInOut(duration: 0.4), value: engine.isDismissing)
+        .animation(.easeInOut(duration: 0.5), value: engine.isDismissing)
     }
 
     @ViewBuilder

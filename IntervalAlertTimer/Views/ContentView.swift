@@ -7,7 +7,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if engine.isRunning || engine.isComplete {
+                if engine.isRunning || engine.isComplete || engine.isDismissing {
                     TimerRunningView(ringNamespace: ringNamespace)
                         .transition(.opacity)
                 } else {
@@ -18,7 +18,7 @@ struct ContentView: View {
                         ))
                 }
             }
-            .animation(.easeInOut(duration: 0.5), value: engine.isRunning)
+            .animation(.easeInOut(duration: 0.5), value: engine.isDismissing)
         }
         .preferredColorScheme(.dark)
     }
