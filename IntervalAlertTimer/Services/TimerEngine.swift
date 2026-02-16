@@ -105,22 +105,10 @@ final class TimerEngine {
         stopDisplayTimer()
         endLiveActivity(showComplete: false)
 
-        let startProgress = progress
-        let dismissDuration: TimeInterval = 0.5
-        let dismissStart = Date()
-
-        displayTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [weak self] timer in
-            guard let self else { timer.invalidate(); return }
-            let elapsed = Date().timeIntervalSince(dismissStart)
-            let t = min(elapsed / dismissDuration, 1.0)
-            let eased = 1 - (1 - t) * (1 - t)
-            self.progress = startProgress * (1 - eased)
-
-            if t >= 1.0 {
-                timer.invalidate()
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    self.cancel()
-                }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self else { return }
+            withAnimation(.easeInOut(duration: 0.4)) {
+                self.cancel()
             }
         }
     }
