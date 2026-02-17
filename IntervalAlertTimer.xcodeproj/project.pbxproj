@@ -34,6 +34,8 @@
 		C07B8DD7834AA5CE53589D82 /* HapticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155ED31496ADF1288D30570 /* HapticService.swift */; };
 		E6E658599D7BE51ADC819DAB /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E6C4C5E83CC0B125D8B93B /* AudioService.swift */; };
 		FDE150F31B912FD620ADA44C /* IntervalModePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84686CFBC92820117E1F175 /* IntervalModePicker.swift */; };
+		F1A2B3C4D5E6F789AB000001 /* TimerLiveActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F789AB000000 /* TimerLiveActivityIntents.swift */; };
+		F1A2B3C4D5E6F789AB000002 /* TimerLiveActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F789AB000000 /* TimerLiveActivityIntents.swift */; };
 		FE3ED684370A02F71B06D550 /* TimerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA8C4FEFD8A044C9889A917 /* TimerConfiguration.swift */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +89,7 @@
 		D3E6C4C5E83CC0B125D8B93B /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
 		DF031D51263DD99D7BA4FA27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F84686CFBC92820117E1F175 /* IntervalModePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalModePicker.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F789AB000000 /* TimerLiveActivityIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerLiveActivityIntents.swift; sourceTree = "<group>"; };
 		FD11849DB5C0B0BA1F81E382 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -141,6 +144,7 @@
 				FD11849DB5C0B0BA1F81E382 /* Theme.swift */,
 				963E2384D602304CF6A90E84 /* TimerActivityAttributes.swift */,
 				4EA8C4FEFD8A044C9889A917 /* TimerConfiguration.swift */,
+				F1A2B3C4D5E6F789AB000000 /* TimerLiveActivityIntents.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -305,6 +309,7 @@
 				7FFAD6ED4E923A29AE97EEE8 /* TimerActivityWidgetBundle.swift in Sources */,
 				2914F0B4E8469B91D1491AB8 /* TimerActivityWidgetLiveActivity.swift in Sources */,
 				FE3ED684370A02F71B06D550 /* TimerConfiguration.swift in Sources */,
+				F1A2B3C4D5E6F789AB000002 /* TimerLiveActivityIntents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,6 +334,7 @@
 				AFC6F309DB5FE7DE1AA138B8 /* TimerActivityAttributes.swift in Sources */,
 				BC80CA31924010DCA8F2D0F1 /* TimerConfiguration.swift in Sources */,
 				6D59AB4B6B19FC8DCE69D6AF /* TimerEngine.swift in Sources */,
+				F1A2B3C4D5E6F789AB000001 /* TimerLiveActivityIntents.swift in Sources */,
 				5E5F7D87A6F8B04D004C8930 /* TimerPreset.swift in Sources */,
 				A8F624E507FEFADAB1C2D935 /* TimerRunningView.swift in Sources */,
 			);
@@ -350,7 +356,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = U3MBVHK77C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TimerActivityWidget/Info.plist;
@@ -377,7 +383,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = U3MBVHK77C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -393,6 +399,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeve.IntervalAlertTimer;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = MAIN_APP;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -525,7 +532,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = U3MBVHK77C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -541,6 +548,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zeve.IntervalAlertTimer;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MAIN_APP";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -552,7 +560,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = U3MBVHK77C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TimerActivityWidget/Info.plist;

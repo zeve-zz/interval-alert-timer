@@ -2,9 +2,12 @@ import ActivityKit
 import Foundation
 import Observation
 import SwiftUI
+import UserNotifications
 
 @MainActor @Observable
 final class TimerEngine {
+    static var shared: TimerEngine?
+
     // MARK: - Published State
     var remainingTime: TimeInterval = 0
     var progress: Double = 0
@@ -31,6 +34,93 @@ final class TimerEngine {
 
     // MARK: - Services
     var onAlertFired: ((AlertLevel, Int) -> Void)?
+    var onResumed: (() -> Void)?
+
+    // MARK: - Persistence
+
+    private static let persistenceKey = "activeTimer"
+
+    private struct PersistedTimerState: Codable {
+        let configuration: TimerConfiguration
+        let startDate: Date
+        let pauseDate: Date?
+        let accumulatedPauseTime: TimeInterval
+        let isPaused: Bool
+        let firedAlertIndices: Set<Int>
+    }
+
+    func saveState() {
+        guard isRunning, let config = configuration, let start = startDate else {
+            UserDefaults.standard.removeObject(forKey: Self.persistenceKey)
+            return
+        }
+        let state = PersistedTimerState(
+            configuration: config,
+            startDate: start,
+            pauseDate: pauseDate,
+            accumulatedPauseTime: accumulatedPauseTime,
+            isPaused: isPaused,
+            firedAlertIndices: firedAlertIndices
+        )
+        if let data = try? JSONEncoder().encode(state) {
+            UserDefaults.standard.set(data, forKey: Self.persistenceKey)
+        }
+    }
+
+    func restoreIfNeeded() {
+        guard !isRunning,
+              let data = UserDefaults.standard.data(forKey: Self.persistenceKey),
+              let state = try? JSONDecoder().decode(PersistedTimerState.self, from: data)
+        else { return }
+
+        // Calculate elapsed time to check if timer has expired
+        let now = Date()
+        var effectiveElapsed = now.timeIntervalSince(state.startDate) - state.accumulatedPauseTime
+        if state.isPaused, let pd = state.pauseDate {
+            // Don't count time after pause
+            effectiveElapsed = pd.timeIntervalSince(state.startDate) - state.accumulatedPauseTime
+        }
+
+        if effectiveElapsed >= state.configuration.totalDuration {
+            // Timer already expired — clear saved state
+            UserDefaults.standard.removeObject(forKey: Self.persistenceKey)
+            return
+        }
+
+        // End all stale Live Activities from previous sessions
+        for activity in Activity<TimerActivityAttributes>.activities {
+            let finalState = TimerActivityAttributes.ContentState(
+                alertLevelRaw: AlertLevel.final_.rawValue,
+                isPaused: false,
+                isComplete: false,
+                endDate: Date(),
+                progress: 1.0,
+                remainingLabel: "0:00"
+            )
+            let content = ActivityContent(state: finalState, staleDate: nil)
+            Task { await activity.end(content, dismissalPolicy: .immediate) }
+        }
+
+        // Restore all fields
+        configuration = state.configuration
+        startDate = state.startDate
+        isPaused = state.isPaused
+        firedAlertIndices = state.firedAlertIndices
+        isRunning = true
+
+        if state.isPaused {
+            pauseDate = state.pauseDate
+            accumulatedPauseTime = state.accumulatedPauseTime
+            tick()
+            // Don't start display timer — we're paused
+        } else {
+            pauseDate = nil
+            accumulatedPauseTime = state.accumulatedPauseTime
+            tick()
+            startDisplayTimer()
+        }
+        startLiveActivity()
+    }
 
     // MARK: - Computed
     var elapsed: TimeInterval {
@@ -68,6 +158,7 @@ final class TimerEngine {
         isPaused = true
         pauseDate = Date()
         stopDisplayTimer()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         updateLiveActivity()
     }
 
@@ -79,6 +170,7 @@ final class TimerEngine {
         tick()
         startDisplayTimer()
         updateLiveActivity()
+        onResumed?()
     }
 
     func cancel() {
@@ -97,6 +189,8 @@ final class TimerEngine {
         lastLiveActivityUpdate = nil
         currentAlertLevel = .gentle
         endLiveActivity(showComplete: false)
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UserDefaults.standard.removeObject(forKey: Self.persistenceKey)
     }
 
     func dismiss() {

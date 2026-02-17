@@ -15,11 +15,18 @@ struct IntervalAlertTimerApp: App {
             ContentView()
                 .environment(engine)
                 .onAppear {
+                    TimerEngine.shared = engine
+                    engine.restoreIfNeeded()
                     audioService.configureAudioSession()
                     engine.onAlertFired = { _, index in
                         let count = index + 1
                         hapticService.fire(count: count)
                         audioService.fire(count: count)
+                    }
+                    engine.onResumed = { [notificationService] in
+                        if let config = engine.configuration {
+                            notificationService.scheduleAlerts(for: config, startDate: Date(), elapsed: engine.elapsed)
+                        }
                     }
                 }
                 .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -31,6 +38,10 @@ struct IntervalAlertTimerApp: App {
     private func handleScenePhase(from oldPhase: ScenePhase, to newPhase: ScenePhase) {
         switch newPhase {
         case .active:
+            // If the engine isn't running, try to restore from a previous session (app was killed)
+            if !engine.isRunning && !engine.isComplete {
+                engine.restoreIfNeeded()
+            }
             // Returning to foreground — recalculate from Date, cancel remaining notifications
             if engine.isRunning {
                 notificationService.cancelAll()
@@ -41,6 +52,8 @@ struct IntervalAlertTimerApp: App {
                 engine.updateLiveActivity()
             }
         case .background:
+            // Persist timer state so it survives app kill
+            engine.saveState()
             // Going to background — schedule notifications for remaining alerts
             if engine.isRunning, !engine.isPaused, let config = engine.configuration {
                 let el = engine.elapsed

@@ -1,4 +1,5 @@
 import ActivityKit
+import AppIntents
 import SwiftUI
 import WidgetKit
 
@@ -13,78 +14,89 @@ struct TimerActivityWidgetLiveActivity: Widget {
             return DynamicIsland {
                 // MARK: - Expanded
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 5) {
-                        Circle()
-                            .fill(level.glowColor)
-                            .frame(width: 8, height: 8)
-                        Text(level.label)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.7))
-                            .lineLimit(1)
-                        Text("·")
-                            .foregroundStyle(.white.opacity(0.25))
-                        Text(context.attributes.intervalModeLabel)
-                            .font(.system(size: 11))
-                            .foregroundStyle(.white.opacity(0.35))
-                            .lineLimit(1)
+                    HStack(spacing: 8) {
+                        Button(intent: TogglePauseIntent()) {
+                            Image(systemName: context.state.isPaused ? "play.fill" : "pause.fill")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 36, height: 36)
+                                .background(level.glowColor)
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(.plain)
+
+                        Button(intent: CancelTimerIntent()) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(.white.opacity(0.7))
+                                .frame(width: 36, height: 36)
+                                .background(.white.opacity(0.15))
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(.plain)
                     }
                     .padding(.leading, 4)
-                    .padding(.top, 6)
+                    .padding(.top, 4)
                 }
 
-                DynamicIslandExpandedRegion(.center) {
-                    VStack(spacing: 2) {
+                DynamicIslandExpandedRegion(.trailing, priority: 1) {
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(level.label)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(level.glowColor)
+                            .lineLimit(1)
+
                         if context.state.isComplete {
-                            Text("COMPLETE")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                            Text("Done")
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
                                 .foregroundStyle(level.glowColor)
                         } else if context.state.isPaused {
-                            Text("PAUSED")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                            Text(context.state.remainingLabel)
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
+                                .monospacedDigit()
                                 .foregroundStyle(.white.opacity(0.4))
                         } else {
                             Text(timerInterval: timerRange, countsDown: true)
-                                .font(.system(size: 32, weight: .bold, design: .rounded))
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
                                 .monospacedDigit()
                                 .foregroundStyle(.white)
+                                .multilineTextAlignment(.trailing)
                         }
                     }
-                    .padding(.top, 2)
-                }
-
-                DynamicIslandExpandedRegion(.trailing) {
-                    EmptyView()
-                }
-
-                DynamicIslandExpandedRegion(.bottom) {
-                    if context.state.isComplete || context.state.isPaused {
-                        ProgressView(value: context.state.progress)
-                            .tint(level.glowColor)
-                            .padding(.horizontal, 4)
-                    } else {
-                        ProgressView(timerInterval: timerRange, countsDown: false) { EmptyView() }
-                            .tint(level.glowColor)
-                            .padding(.horizontal, 4)
-                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.top, 4)
                 }
 
             } compactLeading: {
-                Circle()
-                    .fill(level.glowColor)
-                    .frame(width: 8, height: 8)
+                if context.state.isPaused {
+                    Image(systemName: "pause.fill")
+                        .font(.system(size: 9))
+                        .foregroundStyle(level.glowColor)
+                } else {
+                    CompactRing(progress: context.state.progress, color: level.glowColor)
+                        .frame(width: 12, height: 12)
+                }
 
             } compactTrailing: {
-                Text(timerInterval: timerRange, countsDown: true)
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(.white)
-                    .minimumScaleFactor(0.6)
-                    .frame(maxWidth: 36)
-                    .lineLimit(1)
+                if context.state.isPaused {
+                    Text(context.state.remainingLabel)
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.white.opacity(0.4))
+                        .frame(maxWidth: 36)
+                        .lineLimit(1)
+                } else {
+                    Text(timerInterval: timerRange, countsDown: true)
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.white)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: 36)
+                        .lineLimit(1)
+                }
 
             } minimal: {
-                Circle()
-                    .fill(level.glowColor)
+                CompactRing(progress: context.state.progress, color: level.glowColor)
                     .frame(width: 11, height: 11)
             }
         }
