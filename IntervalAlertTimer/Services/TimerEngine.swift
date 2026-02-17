@@ -104,6 +104,8 @@ final class TimerEngine {
         isDismissing = true
         stopDisplayTimer()
         endLiveActivity(showComplete: false)
+        progress = 0
+        currentAlertLevel = .gentle
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self else { return }

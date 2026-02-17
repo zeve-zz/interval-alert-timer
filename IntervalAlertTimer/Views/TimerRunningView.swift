@@ -4,6 +4,7 @@ struct TimerRunningView: View {
     @Environment(TimerEngine.self) private var engine
     @State private var flipAngle: Double = 0
     @State private var displayedLabel: String = ""
+    @State private var pauseGlow: CGFloat = 0
     var ringNamespace: Namespace.ID
 
     var statusLabel: String {
@@ -41,18 +42,13 @@ struct TimerRunningView: View {
                     .font(.caption.weight(.bold))
                     .tracking(3)
                     .foregroundStyle(statusColor)
+                    .shadow(color: Theme.accent.opacity(pauseGlow), radius: 12)
+                    .shadow(color: Theme.accent.opacity(pauseGlow * 0.5), radius: 24)
                     .opacity(engine.isDismissing ? 0 : 1.0)
-                    .phaseAnimator(engine.isPaused ? [0.4, 1.0] : [1.0]) { content, phase in
-                        content.opacity(phase)
-                    } animation: { _ in
-                        .easeInOut(duration: 1.5)
-                    }
                     .rotation3DEffect(.degrees(flipAngle), axis: (x: 1, y: 0, z: 0))
                     .onChange(of: statusLabel) { oldVal, newVal in
-                        guard !newVal.isEmpty, oldVal != newVal else {
-                            displayedLabel = newVal
-                            return
-                        }
+                        if newVal.isEmpty { return }
+                        guard oldVal != newVal else { return }
                         withAnimation(.easeIn(duration: 0.15)) {
                             flipAngle = 90
                         }
@@ -67,6 +63,17 @@ struct TimerRunningView: View {
                     .onAppear {
                         displayedLabel = statusLabel
                     }
+                    .onChange(of: displayedLabel) { _, newVal in
+                        if newVal == "PAUSED" {
+                            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                                pauseGlow = 1.0
+                            }
+                        } else {
+                            withAnimation(.easeOut(duration: 0.3)) {
+                                pauseGlow = 0
+                            }
+                        }
+                    }
 
                 // Progress ring with time
                 ZStack {
@@ -78,7 +85,8 @@ struct TimerRunningView: View {
                     ProgressRingView(
                         progress: engine.progress,
                         alertLevel: engine.currentAlertLevel,
-                        alertOffsets: normalizedOffsets
+                        alertOffsets: normalizedOffsets,
+                        isDismissing: engine.isDismissing
                     )
                     .frame(width: 260, height: 260)
 

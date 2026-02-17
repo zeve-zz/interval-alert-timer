@@ -4,6 +4,7 @@ struct ProgressRingView: View {
     var progress: Double
     var alertLevel: AlertLevel
     var alertOffsets: [Double] // normalized 0-1
+    var isDismissing: Bool = false
 
     private let lineWidth: CGFloat = 12
 
@@ -22,7 +23,7 @@ struct ProgressRingView: View {
                         style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
-                    .animation(.linear(duration: 0.1), value: progress)
+                    .animation(isDismissing ? .easeInOut(duration: 0.5) : .linear(duration: 0.1), value: progress)
 
                 ForEach(Array(alertOffsets.enumerated()), id: \.offset) { _, normalizedOffset in
                     if normalizedOffset < 1.0 {
